@@ -93,6 +93,6 @@ namespace HS_List
         }
 
         //용량
-        public int Capcity
+        public int Capcity;
     }
 }
