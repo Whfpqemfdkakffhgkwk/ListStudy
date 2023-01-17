@@ -5,6 +5,16 @@
     {
         static void Main()
         {
+            HS_List.List<int> list = new HS_List.List<int>();
+
+            list.Add(1);
+            list.Add(2);
+            list.Add(3);
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                Console.WriteLine(list.items[i]);
+            }
             LinkedList<int> linkedList = new LinkedList<int>();
 
             linkedList.Add(1);
@@ -84,7 +94,7 @@ namespace HS_List
 {
     class List<T>
     {
-        private T[] items;
+        public T[] items;
         private int size;
 
         public int Count
@@ -93,6 +103,54 @@ namespace HS_List
         }
 
         //용량
-        public int Capcity;
+        public int Capcity
+        {
+            get => items.Length;
+            set
+            {
+                if(value != items.Length)
+                {
+                    if (value > 0)
+                    {
+                        T[] newItems = new T[value];
+                        
+                        //items = 복사할 대상
+                        //Index (0) = 복사할 배열의 시작 인덱스
+                        //newItems = 복사될 대상
+                        //Index (0) = 복사될 배열의 시작 인덱스
+                        //size = 복사할 길이
+                        Array.Copy(items, 0, newItems, 0, size);
+
+                        items = newItems;
+                    }
+                    else
+                    {
+                        items = new T[0];
+                    }
+                }
+            }
+        }
+
+        //null 값이 할당되지 않도록 초기화
+        public List()
+        {
+            items = new T[0];
+            size = 0;
+        }
+
+        public void Add(T item)
+        {
+            //사이즈가 배열의 크기랑 같다면
+            if (size == items.Length)
+                EnsureCapacity(); //용량이 꽉차면 2배로 늘려주는 함수
+
+            items[size++] = item;
+        }
+
+        private void EnsureCapacity()
+        {
+            int newCapacity = items.Length == 0 ? 4 : items.Length * 2;
+            Capcity = newCapacity;
+        }
     }
 }
