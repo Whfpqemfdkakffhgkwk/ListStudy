@@ -10,11 +10,15 @@
             list.Add(1);
             list.Add(2);
             list.Add(3);
+            list.RemoveAt(2);
 
             for (int i = 0; i < list.Count; i++)
             {
                 Console.WriteLine(list.items[i]);
             }
+
+
+
             LinkedList<int> linkedList = new LinkedList<int>();
 
             linkedList.Add(1);
@@ -138,15 +142,50 @@ namespace HS_List
             size = 0;
         }
 
+        /// <summary>
+        /// 값 추가
+        /// </summary>
+        /// <param name="item"></param>
         public void Add(T item)
         {
             //사이즈가 배열의 크기랑 같다면
             if (size == items.Length)
-                EnsureCapacity(); //용량이 꽉차면 2배로 늘려주는 함수
+                EnsureCapacity();
 
             items[size++] = item;
         }
 
+        /// <summary>
+        /// 원하는 요소의 값을 삭제
+        /// </summary>
+        /// <param name="index"></param>
+        public void RemoveAt(int index)
+        {
+            if(index > size - 1)
+            {
+                string MethodName = System.Reflection.MethodBase.GetCurrentMethod().Name;
+                
+                //유니티 전용 에러 문구
+                //Debug.LogError($"배열의 크기를 초과한 값으로 정상적으로 {MethodName} 함수를 실행할 수 없습니다");
+                
+                Console.WriteLine($"배열의 크기를 초과한 값으로 정상적으로 {MethodName} 함수를 실행할 수 없습니다");
+                return;
+            }
+
+            size--;
+            
+            if(index < size)
+            {
+                Array.Copy(items, index + 1, items, index, size - index);
+            }
+
+            //default(T) = 리스트 자료형의 기본값
+            items[size] = default(T);
+        }
+
+        /// <summary>
+        /// 용량이 꽉차면 2배로 늘려주는 함수
+        /// </summary>
         private void EnsureCapacity()
         {
             int newCapacity = items.Length == 0 ? 4 : items.Length * 2;
