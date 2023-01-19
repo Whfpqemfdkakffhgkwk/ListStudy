@@ -10,7 +10,8 @@
             list.Add(1);
             list.Add(2);
             list.Add(3);
-            list.RemoveAt(2);
+            list.Clear();
+            list.Clear();
 
             for (int i = 0; i < list.Count; i++)
             {
@@ -181,6 +182,21 @@ namespace HS_List
 
             //default(T) = 리스트 자료형의 기본값
             items[size] = default(T);
+        }
+
+        /// <summary>
+        /// 리스트 안에 모든 값 삭제
+        /// </summary>
+        public void Clear()
+        {
+            //비어있지 않다면
+            if(size > 0)
+            {
+                //비워주기 (items를 0번째부터 size 만큼)
+                Array.Clear(items, 0, size);
+                //size 크기 0으로 초기화
+                size = 0;
+            }
         }
 
         /// <summary>
