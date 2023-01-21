@@ -7,11 +7,13 @@
         {
             HS_List.List<int> list = new HS_List.List<int>();
 
+            //Remove와 RemoveAt의 차이점은 값을 찾아서 지우냐와 index로 지우냐로 차이가 난다.
+
+
+            list.Add(3);
             list.Add(1);
             list.Add(2);
-            list.Add(3);
-            list.Clear();
-            list.Clear();
+            list.Remove(4);
 
             for (int i = 0; i < list.Count; i++)
             {
@@ -157,7 +159,7 @@ namespace HS_List
         }
 
         /// <summary>
-        /// 원하는 요소의 값을 삭제
+        /// 인덱스를 찾아서 지워주는 함수
         /// </summary>
         /// <param name="index"></param>
         public void RemoveAt(int index)
@@ -185,6 +187,40 @@ namespace HS_List
         }
 
         /// <summary>
+        /// 값을 찾아서 지워주는 함수
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public bool Remove(T item)
+        {
+            //들어온 값 item의 인덱스를 찾는다
+            int index = IndexOf(item);
+
+            //인덱스가 0보다 크다면 (배열이 0부터 시작하니까)
+            if(index >= 0)
+            {
+               //그 인덱스의 값을 지운다 
+                RemoveAt(index);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 인덱스 찾아주는 함수
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public int IndexOf(T item)
+        {
+            //찾는 값의 인덱스 반환
+            //!주의! 찾는 값이 없다면 -1을 반환한다
+            return Array.IndexOf(items, item, 0, size);
+        }
+
+        /// <summary>
         /// 리스트 안에 모든 값 삭제
         /// </summary>
         public void Clear()
@@ -204,7 +240,9 @@ namespace HS_List
         /// </summary>
         private void EnsureCapacity()
         {
+            //items의 크기가 0이면 4로 만들어주고 아니면 4의 N제곱씩 크기를 키워준다
             int newCapacity = items.Length == 0 ? 4 : items.Length * 2;
+
             Capcity = newCapacity;
         }
     }
