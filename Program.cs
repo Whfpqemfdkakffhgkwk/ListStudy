@@ -1,7 +1,9 @@
-﻿namespace HS_LinkedList
+﻿using HS_LinkedList;
+
+namespace Program
 {
     //사용 예제
-    class Class
+    class Program
     {
         static void Main()
         {
@@ -17,85 +19,240 @@
 
             for (int i = 0; i < list.Count; i++)
             {
-                Console.WriteLine(list.items[i]);
+                //Console.WriteLine(list.items[i]);
             }
 
+            HS_LinkedList.LinkedList<int> linkedList = new HS_LinkedList.LinkedList<int>();
 
+            //머리(앞)부분에 추가
+            linkedList.AddHead(1);
+            linkedList.AddHead(2);
+            Node<int> node = linkedList.AddHead(3);
+            linkedList.AddHead(4);
 
-            LinkedList<int> linkedList = new LinkedList<int>();
+            //꼬리(뒷)부분에 추가
+            linkedList.AddTail(5);
 
-            linkedList.Add(1);
-            linkedList.Add(2);
-            Node<int> node = linkedList.Add(3);
+            //원하는 Node 지우기 (3)
             linkedList.ReMove(node);
+            //머리 부분 지우기(1)
+            linkedList.ReMoveHead();
+            //꼬리 부분 지우기(4)
+            linkedList.ReMoveTail();
+            Console.WriteLine(linkedList.First()); //2
+            Console.WriteLine(linkedList.Last()); //4
+            Console.WriteLine(linkedList.Count); //2개
         }
+
     }
 }
 
-class Node<T>
+
+
+namespace HS_LinkedList
 {
-    public T Data;
-    public Node<T> Next;
-    public Node<T> Prev;
-}
-
-class LinkedList<T>
-{
-    public Node<T> Head = null; //첫번째 머리 배열
-    public Node<T> Tail = null; //마지막 꼬리 배열
-    public int Count = 0;
-    public Node<T> Add(T data)
+    class Node<T>
     {
-        Node<T> newRoom = new Node<T>();
-        newRoom.Data = data;
-
-        //아직 첫 방이 없었다면 방금 추가한 방이 첫 방으로 지정해준다.
-        if (Head == null)
-        {
-            Head = newRoom;
-        }
-
-        //마지막 방이 비어있지 않는다면
-        //마지막 방과 새로 들어온 방을 서로 연결시켜준다
-        if (Tail != null)
-        {
-            Tail.Next = newRoom;
-            newRoom.Prev = Tail;
-        }
-
-        //새로 들어온 방을 마지막 방으로 지정한다
-        Tail = newRoom;
-        Count++;
-        return newRoom;
+        public T Data;
+        //노드의 앞부분
+        public Node<T> Next;
+        //노드의 뒷부분
+        public Node<T> Prev;
     }
 
-    public void ReMove(Node<T> room)
+    class LinkedList<T>
     {
-        //지울려는 방이 첫번째 방이라면 
-        //2번째 방을 1번째 방으로 변경한다
-        if (Head == room)
+        public Node<T> Head = null; //첫번째 머리 배열
+        public Node<T> Tail = null; //마지막 꼬리 배열
+        public int Count = 0; //얼만큼 들어있는지 크기
+
+        /// <summary>
+        /// 머리 부분에 추가하는 기능
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public Node<T> AddHead(T data)
         {
-            Head = Head.Next;
+            //추가하고 싶은 값을 넣은 newRoom이라는 새로운 Node 생성
+            Node<T> newRoom = new Node<T>();
+            newRoom.Data = data;
+
+            //머리 부분이 없다면
+            if (Head == null)
+            {
+                //머리 부분과 꼬리 부분에 추가하고 싶은 값을 넣는다
+                Head = newRoom;
+                Tail = newRoom;
+            }
+            //머리 부분이 있다면
+            else
+            {
+                var cur = Head;
+                //머리부분부터 계속 다음껄로 넘어가며 탐색을 돈다
+                while (cur != null && cur.Next != null)
+                    cur = cur.Next;
+
+                //마지막 부분을 찾았다면 마지막 부분의 다음 Node를 넣고싶은 Node로 설정하고
+                cur.Next = newRoom;
+                //넣고싶은 Node의 전 Node를 마지막 부분에 연결 시켜준다
+                newRoom.Prev = cur;
+                //새로 들어온 Node는 꼬리이기 때문에 Next는 ㅜull로 만들어준다
+                newRoom.Next = null;
+                //새로 들어온 방을 마지막 방으로 지정한다
+                Tail = newRoom;
+            }
+            Count++;
+            return newRoom;
         }
 
-        //지울려는 방이 마지막 방이라면
-        //마지막 전 방을 마지막 방으로 변경한다 
-        if (Tail == room)
+        /// <summary>
+        /// 꼬리 부분에 추가하는 기능
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public Node<T> AddTail(T data)
         {
-            Tail = Tail.Prev;
+            //위와 동일.
+            Node<T> newRoom = new Node<T>();
+            newRoom.Data = data;
+
+            //꼬리 부분이 없다면
+            if (Tail == null)
+            {
+                //머리 부분과 꼬리 부분에 추가하고 싶은 값을 넣는다
+                Head = newRoom;
+                Tail = newRoom;
+            }
+            //꼬리 부분이 있다면
+            else
+            {
+                //꼬리 부분의 다음 Node를 넣고싶은 값의 Node랑 연결 시켜주고
+                Tail.Next = newRoom;
+                //그 새로운 Node의 전 Node는 꼬리랑 연결 시켜준다
+                newRoom.Prev = Tail;
+                //꼬리에는 넣고 싶은 값의 Node를 넣어준다
+                Tail = newRoom;
+                //넣고 싶은 값의 Node는 꼬리이기 때문에 Next는 비워준다
+                newRoom.Next = null;
+            }
+            Count++;
+            return newRoom;
         }
 
-        //지울려는 방의 앞 방과 뒷 방을 연결시켜준다
-        if (room.Prev != null)
-            room.Prev.Next = room.Next;
+        /// <summary>
+        /// 원하는 Node를 지우는 기능
+        /// </summary>
+        /// <param name="room"></param>
+        public void ReMove(Node<T> room)
+        {
+            //지울려는 방이 머리라면
+            if (Head == room)
+            {
+                //머리는 머리의 다음 Node로 설정한다
+                Head = Head.Next;
+            }
+            //만약 지울려는 방이 꼬리라면
+            else if (room == Tail)
+            {
+                //지울려는 방의 전 Node를 꼬리로 설정한다
+                room.Prev = Tail;
+            }
+            else
+            {
+                //지울려는 방의 전의 다음은 지울려는 방의 다음이다
+                //지울려는 방 뒤에 있는 방. 그 방의 앞부분을 지울려는 방의 앞부분 방과 연결 시켜줌으로써
+                //지울려는 방과 분리 시켜주는 것이다
+                room.Prev.Next = room.Next;
 
-        //지울려는 방의 뒷 방과 앞 방을 연결시켜준다
-        if (room.Next != null)
-            room.Next.Prev = room.Prev;
+                //위의 반대
+                room.Next.Prev = room.Prev;
+                
+            }
 
-        Count--;
+            Count--;
+        }
+
+        /// <summary>
+        /// 머리 부분을 지우는 기능
+        /// </summary>
+        /// <exception cref="ApplicationException"></exception>
+        public void ReMoveHead()
+        {
+            if (Head == null)
+                throw new ApplicationException("Null");
+
+            //요소가 하나만 있을 시
+            else if(Head == Tail)
+            {
+                //머리와 꼬리 부분을 비워준다
+                Head = null;
+                Tail = null;
+            }
+            //요소가 여러개 있을 시
+            else
+            {
+                //머리 부분은 머리 부분의 다음 Node로 설정한다
+                Head = Head.Next;
+            }
+
+            Count--;
+        }
+
+        /// <summary>
+        /// 꼬리 부분을 지우는 기능
+        /// </summary>
+        /// <exception cref="ApplicationException"></exception>
+        public void ReMoveTail()
+        {
+            if (Tail == null)
+                throw new ApplicationException("Null");
+
+            //요소가 하나만 있을 시
+            else if (Tail == Head)
+            {
+                //꼬리와 머리 부분을 비워준다
+                Tail = null;
+                Head = null;
+            }
+            //요소가 여러개 있을 시
+            else
+            {
+                //꼬리 부분은 꼬리 부분 전 Node로 설정한다
+                Tail = Tail.Prev;
+            }
+
+            Count--;
+        }
+
+        /// <summary>
+        /// 머리 부분의 Data를 반환해주는 기능
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ApplicationException"></exception>
+        public T First()
+        {
+            if (Head == null)
+                throw new ApplicationException("Null");
+
+            return Head.Data;
+        }
+
+        /// <summary>
+        /// 꼬리 부분의 Data를 반환해주는 기능
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ApplicationException"></exception>
+        public T Last()
+        {
+            if (Tail == null)
+                throw new ApplicationException("Null");
+
+            return Tail.Data;
+        }
     }
 }
+
+
 
 namespace HS_List
 {
@@ -115,12 +272,12 @@ namespace HS_List
             get => items.Length;
             set
             {
-                if(value != items.Length)
+                if (value != items.Length)
                 {
                     if (value > 0)
                     {
                         T[] newItems = new T[value];
-                        
+
                         //items = 복사할 대상
                         //Index (0) = 복사할 배열의 시작 인덱스
                         //newItems = 복사될 대상
@@ -164,20 +321,20 @@ namespace HS_List
         /// <param name="index"></param>
         public void RemoveAt(int index)
         {
-            if(index > size - 1)
+            if (index > size - 1)
             {
                 string MethodName = System.Reflection.MethodBase.GetCurrentMethod().Name;
-                
+
                 //유니티 전용 에러 문구
                 //Debug.LogError($"배열의 크기를 초과한 값으로 정상적으로 {MethodName} 함수를 실행할 수 없습니다");
-                
+
                 Console.WriteLine($"배열의 크기를 초과한 값으로 정상적으로 {MethodName} 함수를 실행할 수 없습니다");
                 return;
             }
 
             size--;
-            
-            if(index < size)
+
+            if (index < size)
             {
                 Array.Copy(items, index + 1, items, index, size - index);
             }
@@ -197,9 +354,9 @@ namespace HS_List
             int index = IndexOf(item);
 
             //인덱스가 0보다 크다면 (배열이 0부터 시작하니까)
-            if(index >= 0)
+            if (index >= 0)
             {
-               //그 인덱스의 값을 지운다 
+                //그 인덱스의 값을 지운다 
                 RemoveAt(index);
 
                 return true;
@@ -226,7 +383,7 @@ namespace HS_List
         public void Clear()
         {
             //비어있지 않다면
-            if(size > 0)
+            if (size > 0)
             {
                 //비워주기 (items를 0번째부터 size 만큼)
                 Array.Clear(items, 0, size);
